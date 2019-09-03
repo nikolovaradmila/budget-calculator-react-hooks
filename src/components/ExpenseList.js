@@ -3,7 +3,7 @@ import ExpenseItem from "./ExpenseItem"
 import { MdDelete } from "react-icons/md";
 
 const ExpenseList = ({expenses}) => {
-    console.log(expenses)
+     
     return (
         <>
              <ul className="list">

@@ -34,21 +34,78 @@ console.log(initialExpenses);
 
 
 function App(){
+
+  //******************************* state values ***********************************/
+
+  // all expenses, add expense
   const [expenses, setExpenses] = useState(initialExpenses); 
   
+  // single expense, add single expense
+  const [charge, setCharge] = useState("");
+
+  // single amount, add single amount
+  const [amount, setAmount] = useState("");
+
+  //alert, show or hide alert
+  const [alert, setAlert] = useState({show: false});
+
+
+  //******************************* functionality ***********************************/
+   const handleCharge = e => {
+     console.log(`charge: ${e.target.value}`)
+     setCharge(e.target.value);
+   };
+
+   const handleAmount = e => {
+    console.log(`amount: ${e.target.value}`)
+     setAmount(e.target.value);
+   };
+
+   const handleAlert = ({type, text}) => {
+     setAlert({show: true, type, text});
+     setTimeout(() => {
+       setAlert({show: false});
+     }, 3000);
+   };
+
+   const handleSubmit = e => {
+     e.preventDefault();
+     if (charge !== "" && amount > 0) {
+      const singleExpense = {id: uuid(), charge: charge, amount: amount};
+      setExpenses([...expenses, singleExpense]);
+      handleAlert({type: "success", text: "the item has been added successfuly"});
+      setCharge(" ");
+      setAmount(" ");
+     
+     } else {
+       // handle alert called
+       handleAlert({type: "danger", text: "Please fill the inputs"});
+
+     }
+   };
+
+
+
+
   return (
     <>
-  <Alert/>
+  {alert.show && <Alert type={alert.type} text={alert.text}/>}
   <h1>Budget Calculator</h1>
   <main className="main-container">
-  <ExpenseForm/>
+  <ExpenseForm 
+  charge={charge}
+  amount={amount}
+  handleCharge={handleCharge}
+  handleAmount={handleAmount}
+  handleSubmit={handleSubmit}
+  />
   <ExpenseList expenses={expenses}></ExpenseList>
   </main>
 
   <h1>
     total spendings: <span className="total">
      ${expenses.reduce((acc, curr) => {
-       return (acc += curr.amount);
+       return (acc += parseInt(curr.amount));
      }, 0)}
     </span>
   </h1>
